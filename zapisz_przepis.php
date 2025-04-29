@@ -20,7 +20,7 @@ if (empty($nazwa) || empty($instrukcje) || empty($kategoria) || empty($kalorie) 
 }
 
 if (!is_numeric($kalorie) || !is_numeric($porcje)) {
-    echo "Kalorie i porcje muszą być liczbami!";
+    echo "Kalori i porcje muszą być liczbami!";
     exit;
 }
 
