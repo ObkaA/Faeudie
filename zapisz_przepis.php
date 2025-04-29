@@ -5,7 +5,7 @@ error_reporting(E_ALL);
 ?>
 
 <?php
-$conn = new PDO('pgsql:host=localhost;dbname=postgres', 'postgres', 'maslo555');
+require_once 'db.php';
 
 $nazwa = $_POST['nazwa'];
 $instrukcje = $_POST['instrukcje'];

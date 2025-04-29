@@ -4,11 +4,7 @@ error_reporting(E_ALL);
 ?>
 
 <?php
-    
-    $host = "localhost"; // adres serwera bazy danych
-    $dbname = "postgres"; // nazwa bazy danych
-
-    $conn=new PDO("pgsql:host=$host;dbname=$dbname", 'postgres', 'maslo555');
+    require_once 'db.php';
     
     $categories = $conn->query("SELECT id, name_category FROM meal_categories")->fetchAll(PDO::FETCH_ASSOC);
     $ingredients = $conn->query("SELECT id, name FROM ingredients")->fetchAll(PDO::FETCH_ASSOC);

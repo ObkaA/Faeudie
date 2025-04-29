@@ -1,6 +1,6 @@
 <?php
-$pdo = new PDO("pgsql:host=localhost;dbname=postgres", 'postgres', 'maslo555');
-$recipes =$pdo->query("
+require_once 'db.php';
+$recipes =$conn->query("
     SELECT r.id, r.title, r.instructions, r.calories, r.portions, mc.name_category
     FROM recipes r
     JOIN meal_categories mc ON r.category = mc.id ")->fetchALL(PDO::FETCH_ASSOC);
