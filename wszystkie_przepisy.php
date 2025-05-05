@@ -36,7 +36,7 @@ $recipes =$conn->query("
             <p><strong>Kategoria:</strong> <?=htmlspecialchars($recipe['name_category']) ?></p>
             <p><strong>Instrukcje:</strong> <?= nl2br(htmlspecialchars($recipe['instructions']))?></p>
             <p><strong>Kalorie:</strong> <?= $recipe['calories'] ?></p>
-            <p><strong>Porcje:</strong> <?= $recipe['portions'] ?></p>
+            <p><a href="przepis.php?id=<?= $recipe['id'] ?>">Zobacz pełny przepis</a></p>
         </div>
     </div>
 <?php endforeach; ?>
