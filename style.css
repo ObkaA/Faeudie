@@ -203,6 +203,82 @@ ul li {
     border-radius: 10px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.2);
 }
+
+
+
+/*LOGOWANIE*/
+.login-form-wrapper {
+    background-color: rgba(255,255,255,0.7);
+    padding: 40px;
+    max-width: 1250px;
+    width: 500px;
+    margin-left: calc(75vw / 2 - 250px); /*px*/
+    margin-top: 220px; 
+    overflow-y: auto;
+    max-height: calc(100vh - 320px);
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;      /* Elementy w pionie */
+    align-items: center;         /* Wyśrodkowanie poziome */
+    justify-content: center;     /* Opcjonalnie: środek pionowo w kontenerze */
+    width: 100%;
+}
+
+.login-form label {
+    width: 100%;
+    max-width: 400px;
+    text-align: left;
+    margin-left: 10px;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.login-form input {
+    width: 100%;
+    max-width: 400px;
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 16px;
+}
+
+.login-form-wrapper input[type="submit"] {
+    background-color: #a29d8c;
+}
+
+.login-form-wrapper input[type="submit"]:hover {
+    background-color: #c9c0b2;
+} 
+
+.register-link {
+    text-align: center;
+}
+
+.register-link a {
+    color: #0000EE;
+    text-decoration: underline;
+}
+
+.komunikat_rejestracji {
+    /*margin-top: 10px;*/
+    font-weight: bold;
+}
+
+.komunikat_rejestracji.sukces {
+    color: green;
+}
+
+.komunikat_rejestracji.blad {
+    color: red;
+}
+
+
+
 /* 
 .recipe-page h1 {
     font-size: 40px;

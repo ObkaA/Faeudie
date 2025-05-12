@@ -22,7 +22,7 @@ $recipes =$conn->query("
     <div class="menu-item"><a href="index.php">Strona Główna</a></div>
     <div class="menu-item"><a href="wszystkie_przepisy.php">Wszystkie Przepisy</a></div>
     <div class="menu-item"><a href="dodaj_przepis.php">Dodaj Przepis</a></div>
-    <div class="menu-item"><a href="zaloguj_sie.php">Zaloguj się</a></div>
+    <div class="menu-item"><a href="zaloguj_sie.php"> <?php require_once 'sesja.php'; echo get_loginout_mes() ?> </a></div>
 </div>
 
 <h2 style="text-align:center; margin-top: 140px; ">Lista przepisów</h2>

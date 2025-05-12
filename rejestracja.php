@@ -2,56 +2,45 @@
     error_reporting(E_ALL);
     ini_set('display_errors', 1);
     require_once "db.php";
-    require_once "sesja.php";
+    //require_once 'sesja.php'; 
+
     $komunikat = '';
     $typKomunikatu = '';
 
-
-    if(isLoggedIn())
-    {
-        logoutUser();
-        header("Location: index.php");
-        exit();
-    }
-    
-
     if ($_SERVER["REQUEST_METHOD"] === "POST") 
     {
-        // Pobranie danych z formularza
         $login = $_POST['login'] ?? '';
         $haslo = $_POST['haslo'] ?? '';
 
-        //echo '<p style="color: blue;">Login: ' . htmlspecialchars($login) . '</p>';
-        //echo '<p style="color: blue;">Hasło: ' . htmlspecialchars($haslo) . '</p>';
-
-        //Znajdowanie użytkownika
-        $stmt = $conn->prepare("SELECT password_hashed FROM users WHERE login = :login LIMIT 1");
+        //sprawdzenie czy już nie ma takiego loginu
+        $stmt = $conn->prepare("SELECT 1 FROM users WHERE login = :login LIMIT 1");
         $stmt->execute([':login' => $login]);
-        $user=$stmt->fetch(PDO::FETCH_NUM);
-
-        if($user) 
+        if($stmt->fetch()) 
         {
-            if(password_verify($haslo, $user[0]))
-            {
-                loginUser($login);
-                $komunikat='Zalogowano';
-                $typKomunikatu='sukces';
-            }
-            else
-            {
-                $komunikat='Hasło nie pasuje do loginu';
-                $typKomunikatu='blad';
-            }
+            $komunikat='Podany login już istnieje';
+            $typKomunikatu='blad';
         }
         else
         {
-            $komunikat='Nie ma takiego zarejestrowanego użytkownika';
-            $typKomunikatu='blad';
+            if (strlen($haslo) < 4) 
+            {
+                $komunikat = 'Hasło musi mieć co najmniej 4 znaków.';
+                $typKomunikatu = 'blad';
+            } 
+            else 
+            {
+                $password_hashed = password_hash($haslo, PASSWORD_BCRYPT);
+
+                $stmt = $conn->prepare("INSERT INTO users (login, password_hashed) VALUES (:login, :password)");
+                $stmt->execute([':login' => $login,':password' => $password_hashed]);
+
+
+                $komunikat = 'Zarejestrowano pomyślnie!';
+                $typKomunikatu = 'sukces';
+            }
         }
     }
 ?>
-    
-
 
 <!DOCTYPE html>
 <html lang="pl">
@@ -73,7 +62,7 @@
     </div>
 
     <div class="login-form-wrapper">
-        <h2>Zaloguj się</h2>
+        <h2>Zarejestruj się</h2>
 
         <form class="login-form" method="POST">
             <label for="login">Login:</label>
@@ -88,12 +77,8 @@
                 </div>
             <?php endif; ?>
 
-            <input type="submit" value="Zaloguj się">
+            <input type="submit" value="Zarejestruj">
         </form>
-
-        <p class="register-link">
-            Nie masz konta? <a href="rejestracja.php">Zarejestruj się</a>
-        </p>
     </div>
 </body>
 </html>

@@ -5,7 +5,7 @@
 -- Dumped from database version 14.17 (Ubuntu 14.17-0ubuntu0.22.04.1)
 -- Dumped by pg_dump version 14.17 (Ubuntu 14.17-0ubuntu0.22.04.1)
 
--- Started on 2025-04-29 20:48:16 CEST
+-- Started on 2025-05-13 00:02:24 CEST
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -23,7 +23,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- TOC entry 214 (class 1259 OID 16427)
+-- TOC entry 209 (class 1259 OID 16384)
 -- Name: comments; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -39,7 +39,7 @@ CREATE TABLE public.comments (
 ALTER TABLE public.comments OWNER TO postgres;
 
 --
--- TOC entry 213 (class 1259 OID 16422)
+-- TOC entry 210 (class 1259 OID 16388)
 -- Name: fridgeingredient; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -55,7 +55,7 @@ CREATE TABLE public.fridgeingredient (
 ALTER TABLE public.fridgeingredient OWNER TO postgres;
 
 --
--- TOC entry 211 (class 1259 OID 16405)
+-- TOC entry 211 (class 1259 OID 16391)
 -- Name: ingredients; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -71,7 +71,7 @@ CREATE TABLE public.ingredients (
 ALTER TABLE public.ingredients OWNER TO postgres;
 
 --
--- TOC entry 216 (class 1259 OID 16464)
+-- TOC entry 212 (class 1259 OID 16397)
 -- Name: meal_categories; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -84,7 +84,7 @@ CREATE TABLE public.meal_categories (
 ALTER TABLE public.meal_categories OWNER TO postgres;
 
 --
--- TOC entry 215 (class 1259 OID 16463)
+-- TOC entry 213 (class 1259 OID 16400)
 -- Name: meal_categories_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -100,8 +100,8 @@ CREATE SEQUENCE public.meal_categories_id_seq
 ALTER TABLE public.meal_categories_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3429 (class 0 OID 0)
--- Dependencies: 215
+-- TOC entry 3432 (class 0 OID 0)
+-- Dependencies: 213
 -- Name: meal_categories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -109,7 +109,7 @@ ALTER SEQUENCE public.meal_categories_id_seq OWNED BY public.meal_categories.id;
 
 
 --
--- TOC entry 212 (class 1259 OID 16417)
+-- TOC entry 214 (class 1259 OID 16401)
 -- Name: recipeingredients; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -124,7 +124,7 @@ CREATE TABLE public.recipeingredients (
 ALTER TABLE public.recipeingredients OWNER TO postgres;
 
 --
--- TOC entry 210 (class 1259 OID 16391)
+-- TOC entry 215 (class 1259 OID 16404)
 -- Name: recipes; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -145,7 +145,7 @@ CREATE TABLE public.recipes (
 ALTER TABLE public.recipes OWNER TO postgres;
 
 --
--- TOC entry 219 (class 1259 OID 16543)
+-- TOC entry 216 (class 1259 OID 16411)
 -- Name: recipes_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -161,8 +161,8 @@ CREATE SEQUENCE public.recipes_id_seq
 ALTER TABLE public.recipes_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3430 (class 0 OID 0)
--- Dependencies: 219
+-- TOC entry 3433 (class 0 OID 0)
+-- Dependencies: 216
 -- Name: recipes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -170,7 +170,7 @@ ALTER SEQUENCE public.recipes_id_seq OWNED BY public.recipes.id;
 
 
 --
--- TOC entry 218 (class 1259 OID 16528)
+-- TOC entry 217 (class 1259 OID 16412)
 -- Name: units; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -183,7 +183,7 @@ CREATE TABLE public.units (
 ALTER TABLE public.units OWNER TO postgres;
 
 --
--- TOC entry 217 (class 1259 OID 16527)
+-- TOC entry 218 (class 1259 OID 16415)
 -- Name: units_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -199,8 +199,8 @@ CREATE SEQUENCE public.units_id_seq
 ALTER TABLE public.units_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3431 (class 0 OID 0)
--- Dependencies: 217
+-- TOC entry 3434 (class 0 OID 0)
+-- Dependencies: 218
 -- Name: units_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -208,23 +208,36 @@ ALTER SEQUENCE public.units_id_seq OWNED BY public.units.id;
 
 
 --
--- TOC entry 209 (class 1259 OID 16384)
+-- TOC entry 220 (class 1259 OID 16484)
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.users_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.users_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 219 (class 1259 OID 16416)
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.users (
-    id integer NOT NULL,
-    nickname character varying(15) NOT NULL,
-    password_sha256 text NOT NULL,
-    age integer NOT NULL,
-    gender character(1) NOT NULL
+    id integer DEFAULT nextval('public.users_id_seq'::regclass) NOT NULL,
+    login character varying(15) NOT NULL,
+    password_hashed text NOT NULL
 );
 
 
 ALTER TABLE public.users OWNER TO postgres;
 
 --
--- TOC entry 3244 (class 2604 OID 16467)
+-- TOC entry 3242 (class 2604 OID 16421)
 -- Name: meal_categories id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -232,7 +245,7 @@ ALTER TABLE ONLY public.meal_categories ALTER COLUMN id SET DEFAULT nextval('pub
 
 
 --
--- TOC entry 3239 (class 2604 OID 16544)
+-- TOC entry 3245 (class 2604 OID 16422)
 -- Name: recipes id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -240,7 +253,7 @@ ALTER TABLE ONLY public.recipes ALTER COLUMN id SET DEFAULT nextval('public.reci
 
 
 --
--- TOC entry 3245 (class 2604 OID 16531)
+-- TOC entry 3246 (class 2604 OID 16423)
 -- Name: units id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -248,23 +261,23 @@ ALTER TABLE ONLY public.units ALTER COLUMN id SET DEFAULT nextval('public.units_
 
 
 --
--- TOC entry 3418 (class 0 OID 16427)
--- Dependencies: 214
+-- TOC entry 3415 (class 0 OID 16384)
+-- Dependencies: 209
 -- Data for Name: comments; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 
 
 --
--- TOC entry 3417 (class 0 OID 16422)
--- Dependencies: 213
+-- TOC entry 3416 (class 0 OID 16388)
+-- Dependencies: 210
 -- Data for Name: fridgeingredient; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 
 
 --
--- TOC entry 3415 (class 0 OID 16405)
+-- TOC entry 3417 (class 0 OID 16391)
 -- Dependencies: 211
 -- Data for Name: ingredients; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -286,8 +299,8 @@ INSERT INTO public.ingredients VALUES (14, 'Olej', 0, 0, 0);
 
 
 --
--- TOC entry 3420 (class 0 OID 16464)
--- Dependencies: 216
+-- TOC entry 3418 (class 0 OID 16397)
+-- Dependencies: 212
 -- Data for Name: meal_categories; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -299,8 +312,8 @@ INSERT INTO public.meal_categories VALUES (5, 'przekąska');
 
 
 --
--- TOC entry 3416 (class 0 OID 16417)
--- Dependencies: 212
+-- TOC entry 3420 (class 0 OID 16401)
+-- Dependencies: 214
 -- Data for Name: recipeingredients; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -326,8 +339,8 @@ INSERT INTO public.recipeingredients VALUES (16, 1, 1, 1);
 
 
 --
--- TOC entry 3414 (class 0 OID 16391)
--- Dependencies: 210
+-- TOC entry 3421 (class 0 OID 16404)
+-- Dependencies: 215
 -- Data for Name: recipes; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -340,8 +353,8 @@ INSERT INTO public.recipes VALUES (1, 'Pomidor', 1, 'Zjedz pomidora', NULL, 0, 5
 
 
 --
--- TOC entry 3422 (class 0 OID 16528)
--- Dependencies: 218
+-- TOC entry 3423 (class 0 OID 16412)
+-- Dependencies: 217
 -- Data for Name: units; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -356,17 +369,18 @@ INSERT INTO public.units VALUES (8, 'ząbek');
 
 
 --
--- TOC entry 3413 (class 0 OID 16384)
--- Dependencies: 209
+-- TOC entry 3425 (class 0 OID 16416)
+-- Dependencies: 219
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.users VALUES (1, 'obka', '1234', 22, 'K');
+INSERT INTO public.users VALUES (5, 'Karol', '$2y$10$VmMccthpNO.NjWJ4fJN4uOwsAM0Tj0HjxK1fKKYS7YhZ9rFcmjSr2');
+INSERT INTO public.users VALUES (1, 'Obka', '1234');
 
 
 --
--- TOC entry 3432 (class 0 OID 0)
--- Dependencies: 215
+-- TOC entry 3435 (class 0 OID 0)
+-- Dependencies: 213
 -- Name: meal_categories_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -374,8 +388,8 @@ SELECT pg_catalog.setval('public.meal_categories_id_seq', 1, false);
 
 
 --
--- TOC entry 3433 (class 0 OID 0)
--- Dependencies: 219
+-- TOC entry 3436 (class 0 OID 0)
+-- Dependencies: 216
 -- Name: recipes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -383,8 +397,8 @@ SELECT pg_catalog.setval('public.recipes_id_seq', 16, true);
 
 
 --
--- TOC entry 3434 (class 0 OID 0)
--- Dependencies: 217
+-- TOC entry 3437 (class 0 OID 0)
+-- Dependencies: 218
 -- Name: units_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -392,7 +406,16 @@ SELECT pg_catalog.setval('public.units_id_seq', 7, true);
 
 
 --
--- TOC entry 3257 (class 2606 OID 16432)
+-- TOC entry 3438 (class 0 OID 0)
+-- Dependencies: 220
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.users_id_seq', 5, true);
+
+
+--
+-- TOC entry 3249 (class 2606 OID 16425)
 -- Name: comments comments_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -401,7 +424,7 @@ ALTER TABLE ONLY public.comments
 
 
 --
--- TOC entry 3255 (class 2606 OID 16426)
+-- TOC entry 3251 (class 2606 OID 16427)
 -- Name: fridgeingredient fridgeingredient_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -410,7 +433,7 @@ ALTER TABLE ONLY public.fridgeingredient
 
 
 --
--- TOC entry 3251 (class 2606 OID 16416)
+-- TOC entry 3253 (class 2606 OID 16429)
 -- Name: ingredients ingredients_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -419,7 +442,7 @@ ALTER TABLE ONLY public.ingredients
 
 
 --
--- TOC entry 3253 (class 2606 OID 16414)
+-- TOC entry 3255 (class 2606 OID 16431)
 -- Name: ingredients ingredients_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -428,7 +451,7 @@ ALTER TABLE ONLY public.ingredients
 
 
 --
--- TOC entry 3259 (class 2606 OID 16471)
+-- TOC entry 3257 (class 2606 OID 16433)
 -- Name: meal_categories meal_categories_name_category_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -437,7 +460,7 @@ ALTER TABLE ONLY public.meal_categories
 
 
 --
--- TOC entry 3261 (class 2606 OID 16469)
+-- TOC entry 3259 (class 2606 OID 16435)
 -- Name: meal_categories meal_categories_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -446,7 +469,7 @@ ALTER TABLE ONLY public.meal_categories
 
 
 --
--- TOC entry 3249 (class 2606 OID 16553)
+-- TOC entry 3261 (class 2606 OID 16437)
 -- Name: recipes recipes_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -455,7 +478,7 @@ ALTER TABLE ONLY public.recipes
 
 
 --
--- TOC entry 3263 (class 2606 OID 16535)
+-- TOC entry 3263 (class 2606 OID 16439)
 -- Name: units units_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -464,7 +487,7 @@ ALTER TABLE ONLY public.units
 
 
 --
--- TOC entry 3265 (class 2606 OID 16533)
+-- TOC entry 3265 (class 2606 OID 16441)
 -- Name: units units_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -473,7 +496,7 @@ ALTER TABLE ONLY public.units
 
 
 --
--- TOC entry 3247 (class 2606 OID 16390)
+-- TOC entry 3267 (class 2606 OID 16443)
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -482,7 +505,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 3273 (class 2606 OID 16559)
+-- TOC entry 3268 (class 2606 OID 16444)
 -- Name: comments comments_recipe_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -491,7 +514,7 @@ ALTER TABLE ONLY public.comments
 
 
 --
--- TOC entry 3272 (class 2606 OID 16453)
+-- TOC entry 3269 (class 2606 OID 16449)
 -- Name: comments comments_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -500,7 +523,7 @@ ALTER TABLE ONLY public.comments
 
 
 --
--- TOC entry 3271 (class 2606 OID 16448)
+-- TOC entry 3270 (class 2606 OID 16454)
 -- Name: fridgeingredient fridgeingredient_ingredient_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -509,7 +532,7 @@ ALTER TABLE ONLY public.fridgeingredient
 
 
 --
--- TOC entry 3270 (class 2606 OID 16443)
+-- TOC entry 3271 (class 2606 OID 16459)
 -- Name: fridgeingredient fridgeingredient_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -518,7 +541,7 @@ ALTER TABLE ONLY public.fridgeingredient
 
 
 --
--- TOC entry 3267 (class 2606 OID 16438)
+-- TOC entry 3272 (class 2606 OID 16464)
 -- Name: recipeingredients recipeingredients_ingredient_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -527,7 +550,7 @@ ALTER TABLE ONLY public.recipeingredients
 
 
 --
--- TOC entry 3269 (class 2606 OID 16554)
+-- TOC entry 3273 (class 2606 OID 16469)
 -- Name: recipeingredients recipeingredients_recipe_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -536,7 +559,7 @@ ALTER TABLE ONLY public.recipeingredients
 
 
 --
--- TOC entry 3268 (class 2606 OID 16536)
+-- TOC entry 3274 (class 2606 OID 16474)
 -- Name: recipeingredients recipeingredients_unit_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -545,7 +568,7 @@ ALTER TABLE ONLY public.recipeingredients
 
 
 --
--- TOC entry 3266 (class 2606 OID 16400)
+-- TOC entry 3275 (class 2606 OID 16479)
 -- Name: recipes recipes_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -553,7 +576,7 @@ ALTER TABLE ONLY public.recipes
     ADD CONSTRAINT recipes_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
--- Completed on 2025-04-29 20:48:16 CEST
+-- Completed on 2025-05-13 00:02:24 CEST
 
 --
 -- PostgreSQL database dump complete
