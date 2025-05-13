@@ -5,7 +5,7 @@
 -- Dumped from database version 14.17 (Ubuntu 14.17-0ubuntu0.22.04.1)
 -- Dumped by pg_dump version 14.17 (Ubuntu 14.17-0ubuntu0.22.04.1)
 
--- Started on 2025-05-13 00:02:24 CEST
+-- Started on 2025-05-13 13:46:32 CEST
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -375,7 +375,8 @@ INSERT INTO public.units VALUES (8, 'ząbek');
 --
 
 INSERT INTO public.users VALUES (5, 'Karol', '$2y$10$VmMccthpNO.NjWJ4fJN4uOwsAM0Tj0HjxK1fKKYS7YhZ9rFcmjSr2');
-INSERT INTO public.users VALUES (1, 'Obka', '1234');
+INSERT INTO public.users VALUES (6, 'Jakub', '$2y$10$.DoqKsDuyP4gxUF5oZtyYeySV8q3B97Xec4tejYKYQNdfU6T1J7J.');
+INSERT INTO public.users VALUES (1, 'Obka', '$2y$10$.DoqKsDuyP4gxUF5oZtyYeySV8q3B97Xec4tejYKYQNdfU6T1J7J.');
 
 
 --
@@ -411,7 +412,7 @@ SELECT pg_catalog.setval('public.units_id_seq', 7, true);
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.users_id_seq', 5, true);
+SELECT pg_catalog.setval('public.users_id_seq', 6, true);
 
 
 --
@@ -576,7 +577,7 @@ ALTER TABLE ONLY public.recipes
     ADD CONSTRAINT recipes_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
--- Completed on 2025-05-13 00:02:24 CEST
+-- Completed on 2025-05-13 13:46:32 CEST
 
 --
 -- PostgreSQL database dump complete
