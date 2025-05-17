@@ -5,7 +5,7 @@
 -- Dumped from database version 14.17 (Ubuntu 14.17-0ubuntu0.22.04.1)
 -- Dumped by pg_dump version 14.17 (Ubuntu 14.17-0ubuntu0.22.04.1)
 
--- Started on 2025-05-18 00:17:00 CEST
+-- Started on 2025-05-18 00:22:16 CEST
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -730,7 +730,7 @@ ALTER TABLE ONLY public.recipes
     ADD CONSTRAINT recipes_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
--- Completed on 2025-05-18 00:17:00 CEST
+-- Completed on 2025-05-18 00:22:16 CEST
 
 --
 -- PostgreSQL database dump complete
