@@ -51,6 +51,7 @@
 ?>
 
 <!DOCTYPE html>
+
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
@@ -70,83 +71,85 @@
     <p><strong>Kategoria:</strong> <?=htmlspecialchars($recipe['name_category']) ?> </p>
     <p><strong>Kalorie:</strong> <?=$recipe['calories'] ?> </p>
     <p><strong>Liczba porcji:</strong> <?=$recipe['portions'] ?> </p>
-    
-    <!-- Wyświetlenie średniej oceny -->
-    <div class="average-rating">
-        <p>Średnia ocena: <strong><?= $avgRating ?></strong> (na podstawie <?= $ratingCount ?> ocen)</p>
-    </div>
 
-    <div class="average-stars">
-        <?php
-        $fullStars = floor($avgRating);
-        $halfStar = ($avgRating - $fullStars) >= 0.5 ? true : false;
-        for ($i = 1; $i <= 5; $i++) {
-            if ($i <= $fullStars) {
-                echo '<span style="color: gold;">★</span>';
-            } elseif ($i == $fullStars + 1 && $halfStar) {
-                echo '<span style="color: gold;">☆</span>'; // prosty symbol pół gwiazdki
-            } else {
-                echo '<span style="color: #ccc;">★</span>';
-            }
+```
+<!-- Wyświetlenie średniej oceny -->
+<div class="average-rating">
+    <p>Średnia ocena: <strong><?= $avgRating ?></strong> (na podstawie <?= $ratingCount ?> ocen)</p>
+</div>
+
+<div class="average-stars">
+    <?php
+    $fullStars = floor($avgRating);
+    $halfStar = ($avgRating - $fullStars) >= 0.5 ? true : false;
+    for ($i = 1; $i <= 5; $i++) {
+        if ($i <= $fullStars) {
+            echo '<span style="color: gold;">★</span>';
+        } elseif ($i == $fullStars + 1 && $halfStar) {
+            echo '<span style="color: gold;">☆</span>'; // prosty symbol pół gwiazdki
+        } else {
+            echo '<span style="color: #ccc;">★</span>';
         }
-        ?>
-    </div>
+    }
+    ?>
+</div>
 
-    <h2>Składniki</h2>
+<h2>Składniki</h2>
+<ul>
+    <?php foreach ($ingredients as $item): ?>
+        <li><?= htmlspecialchars($item['ingredient_name']) ?> - <?=$item['amount'] ?> <?=htmlspecialchars($item['unit_name']) ?> </li>
+    <?php endforeach; ?>
+</ul>
+
+<h2>Instrukcje</h2>
+<p><?= nl2br(htmlspecialchars($recipe['instructions'])) ?></p>
+
+<h2>Komentarze</h2>
+<?php if (!$comments): ?>
+   <? echo "<p>Brak komentarzy. Bądź pierwszy!</p>"; ?>
+
+<?php else: ?>
     <ul>
-        <?php foreach ($ingredients as $item): ?>
-            <li><?= htmlspecialchars($item['ingredient_name']) ?> - <?=$item['amount'] ?> <?=htmlspecialchars($item['unit_name']) ?> </li>
-        <?php endforeach; ?>
+    <?php foreach ($comments as $c): ?>
+        <li>
+            <strong><?=htmlspecialchars($c['login'])?></strong> (<?=htmlspecialchars($c['time_created'])?>):<br>
+            <?=nl2br(htmlspecialchars($c['comment']))?>
+        </li>
+    <?php endforeach; ?>
     </ul>
+<?php endif; ?>
 
-    <h2>Instrukcje</h2>
-    <p><?= nl2br(htmlspecialchars($recipe['instructions'])) ?></p>
+<?php if (isLoggedIn()): ?>
+    <h3>Dodaj komentarz</h3>
+    <form method="post" action="dodaj_komentarz.php">
+        <input type="hidden" name="recipe_id" value="<?= $recipe_id ?>">
+        <textarea name="comment" rows="4" cols="50" required></textarea><br>
+        <button type="submit">Dodaj komentarz</button>
+    </form>
+<?php else: ?>
+    <p><a href="zaloguj_sie.php">Zaloguj się</a>, aby dodać komentarz.</p>
+<?php endif; ?>
 
-    <h2>Komentarze</h2>
-    <?php if (!$comments): ?>
-       <? echo "<p>Brak komentarzy. Bądź pierwszy!</p>"; ?>
+<?php if (isLoggedIn()): ?>
+    <div class="rating-form">
+        <h3>Oceń ten przepis</h3>
+        <form action="dodaj_ocene.php" method="POST">
+            <input type="hidden" name="recipe_id" value="<?= htmlspecialchars($recipe_id) ?>">
+            
+            <div class="star-rating">
+                <?php for ($i = 5; $i >= 1; $i--): ?>
+                    <input type="radio" id="star<?= $i ?>" name="rating" value="<?= $i ?>" required>
+                    <label for="star<?= $i ?>">★</label>
+                <?php endfor; ?>
+            </div>
 
-    <?php else: ?>
-        <ul>
-        <?php foreach ($comments as $c): ?>
-            <li>
-                <strong><?=htmlspecialchars($c['login'])?></strong> (<?=htmlspecialchars($c['time_created'])?>):<br>
-                <?=nl2br(htmlspecialchars($c['comment']))?>
-            </li>
-        <?php endforeach; ?>
-        </ul>
-    <?php endif; ?>
-
-    <?php if (isLoggedIn()): ?>
-        <h3>Dodaj komentarz</h3>
-        <form method="post" action="dodaj_komentarz.php">
-            <input type="hidden" name="recipe_id" value="<?= $recipe_id ?>">
-            <textarea name="comment" rows="4" cols="50" required></textarea><br>
-            <button type="submit">Dodaj komentarz</button>
+            <button type="submit">Oceń</button>
         </form>
-    <?php else: ?>
-        <p><a href="zaloguj_sie.php">Zaloguj się</a>, aby dodać komentarz.</p>
-    <?php endif; ?>
-
-    <?php if (isLoggedIn()): ?>
-        <div class="rating-form">
-            <h3>Oceń ten przepis</h3>
-            <form action="dodaj_ocene.php" method="POST">
-                <input type="hidden" name="recipe_id" value="<?= htmlspecialchars($recipe_id) ?>">
-                
-                <div class="star-rating">
-                    <?php for ($i = 5; $i >= 1; $i--): ?>
-                        <input type="radio" id="star<?= $i ?>" name="rating" value="<?= $i ?>" required>
-                        <label for="star<?= $i ?>">★</label>
-                    <?php endfor; ?>
-                </div>
-
-                <button type="submit">Oceń</button>
-            </form>
-        </div>
-    <?php else: ?>
-        <p><em>Zaloguj się, aby ocenić przepis.</em></p>
-    <?php endif; ?>
+    </div>
+<?php else: ?>
+    <p><em>Zaloguj się, aby ocenić przepis.</em></p>
+<?php endif; ?>
+```
 
 </div>
 </body>
