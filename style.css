@@ -304,3 +304,26 @@ ul li {
     margin-bottom: 20px;
     font-family: 'Open Sans', sans-serif;
 } */
+
+.star-rating {
+    direction: rtl;
+    display: inline-flex;
+    gap: 5px;
+    font-size: 2rem;
+}
+
+.star-rating input[type="radio"] {
+    display: none;
+}
+
+.star-rating label {
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.star-rating input[type="radio"]:checked ~ label,
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+    color: gold;
+}

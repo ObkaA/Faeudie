@@ -40,6 +40,13 @@
     ORDER BY c.time_created DESC");
     $stmt->execute([':id' => $recipe_id]);
     $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $stmt = $conn->prepare("SELECT AVG(rating) as avg_rating, COUNT(*) as rating_count FROM ratings WHERE recipe_id = :id");
+    $stmt->execute([':id' => $recipe_id]);
+    $ratingData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    $avgRating = $ratingData['avg_rating'] ? round($ratingData['avg_rating'], 2) : 0;
+    $ratingCount = $ratingData['rating_count'];
     
 ?>
 
@@ -64,6 +71,27 @@
     <p><strong>Kalorie:</strong> <?=$recipe['calories'] ?> </p>
     <p><strong>Liczba porcji:</strong> <?=$recipe['portions'] ?> </p>
     
+    <!-- Wyświetlenie średniej oceny -->
+    <div class="average-rating">
+        <p>Średnia ocena: <strong><?= $avgRating ?></strong> (na podstawie <?= $ratingCount ?> ocen)</p>
+    </div>
+
+    <div class="average-stars">
+        <?php
+        $fullStars = floor($avgRating);
+        $halfStar = ($avgRating - $fullStars) >= 0.5 ? true : false;
+        for ($i = 1; $i <= 5; $i++) {
+            if ($i <= $fullStars) {
+                echo '<span style="color: gold;">★</span>';
+            } elseif ($i == $fullStars + 1 && $halfStar) {
+                echo '<span style="color: gold;">☆</span>'; // prosty symbol pół gwiazdki
+            } else {
+                echo '<span style="color: #ccc;">★</span>';
+            }
+        }
+        ?>
+    </div>
+
     <h2>Składniki</h2>
     <ul>
         <?php foreach ($ingredients as $item): ?>
@@ -98,6 +126,26 @@
         </form>
     <?php else: ?>
         <p><a href="zaloguj_sie.php">Zaloguj się</a>, aby dodać komentarz.</p>
+    <?php endif; ?>
+
+    <?php if (isLoggedIn()): ?>
+        <div class="rating-form">
+            <h3>Oceń ten przepis</h3>
+            <form action="dodaj_ocene.php" method="POST">
+                <input type="hidden" name="recipe_id" value="<?= htmlspecialchars($recipe_id) ?>">
+                
+                <div class="star-rating">
+                    <?php for ($i = 5; $i >= 1; $i--): ?>
+                        <input type="radio" id="star<?= $i ?>" name="rating" value="<?= $i ?>" required>
+                        <label for="star<?= $i ?>">★</label>
+                    <?php endfor; ?>
+                </div>
+
+                <button type="submit">Oceń</button>
+            </form>
+        </div>
+    <?php else: ?>
+        <p><em>Zaloguj się, aby ocenić przepis.</em></p>
     <?php endif; ?>
 
 </div>
