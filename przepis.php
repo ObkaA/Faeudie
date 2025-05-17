@@ -31,6 +31,15 @@
     ");
     $stmt->execute([':id' => $recipe_id]);
     $ingredients = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Pobranie komentarzy do przepisu
+    $stmt = $conn->prepare("SELECT c.comment, c.time_created, u.login 
+    FROM comments c
+    JOIN users u ON c.user_id = u.id
+    WHERE c.recipe_id = :id
+    ORDER BY c.time_created DESC");
+    $stmt->execute([':id' => $recipe_id]);
+    $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
 ?>
 
@@ -64,6 +73,32 @@
 
     <h2>Instrukcje</h2>
     <p><?= nl2br(htmlspecialchars($recipe['instructions'])) ?></p>
+
+    <h2>Komentarze</h2>
+    <?php if (!$comments): ?>
+       <? echo "<p>Brak komentarzy. Bądź pierwszy!</p>"; ?>
+
+    <?php else: ?>
+        <ul>
+        <?php foreach ($comments as $c): ?>
+            <li>
+                <strong><?=htmlspecialchars($c['login'])?></strong> (<?=htmlspecialchars($c['time_created'])?>):<br>
+                <?=nl2br(htmlspecialchars($c['comment']))?>
+            </li>
+        <?php endforeach; ?>
+        </ul>
+    <?php endif; ?>
+
+    <?php if (isLoggedIn()): ?>
+        <h3>Dodaj komentarz</h3>
+        <form method="post" action="dodaj_komentarz.php">
+            <input type="hidden" name="recipe_id" value="<?= $recipe_id ?>">
+            <textarea name="comment" rows="4" cols="50" required></textarea><br>
+            <button type="submit">Dodaj komentarz</button>
+        </form>
+    <?php else: ?>
+        <p><a href="zaloguj_sie.php">Zaloguj się</a>, aby dodać komentarz.</p>
+    <?php endif; ?>
 
 </div>
 </body>
