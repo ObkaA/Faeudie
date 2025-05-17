@@ -1,3 +1,6 @@
+<?php
+    require_once 'sesja.php';  // start sesji i funkcje sesji
+?>
 <!-- Glowny plik -->
 <!DOCTYPE html>
 <html lang="pl">
@@ -5,25 +8,13 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Faeudie </title>
-
-        <!-- Bulma -->
-        //<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-
-        <!-- Czcionka -->
         <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
-
-        <!-- Twój CSS -->
         <link rel="stylesheet" href="style.css">
     </head>
 <body>
     <h1>Faeudie</h1>
 
-    <div id="menu">
-        <div class="menu-item"><a href="index.php">Strona Główna</a></div>
-        <div class="menu-item"><a href="wszystkie_przepisy.php">Wszystkie Przepisy</a></div>
-        <div class="menu-item"><a href="dodaj_przepis.php">Dodaj Przepis</a></div>
-        <div class="menu-item"><a href="zaloguj_sie.php"> <?php require_once 'sesja.php'; echo get_loginout_mes() ?> </a></div> 
-    </div>
+    <?php include 'menu.php'; ?>
 
     </body>
     </html>

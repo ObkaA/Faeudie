@@ -63,12 +63,7 @@
 <body id="login-page">
     <h1>Faeudie</h1>
 
-    <div id="menu">
-        <div class="menu-item"><a href="index.php">Strona Główna</a></div>
-        <div class="menu-item"><a href="wszystkie_przepisy.php">Wszystkie Przepisy</a></div>
-        <div class="menu-item"><a href="dodaj_przepis.php">Dodaj Przepis</a></div>
-        <div class="menu-item"><a href="zaloguj_sie.php"> <?php require_once 'sesja.php'; echo get_loginout_mes() ?> </a></div>
-    </div>
+    <?php include 'menu.php'; ?>
 
     <div class="login-form-wrapper">
         <h2>Zaloguj się</h2>
