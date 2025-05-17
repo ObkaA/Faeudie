@@ -5,10 +5,17 @@ error_reporting(E_ALL);
 
 <?php
     require_once 'db.php';
-    
+
+    require_once 'sesja.php';
+    if (!isLoggedIn()) {
+        echo '<p>Musisz być zalogowany, żeby dodać przepis.</p>';
+        exit;
+    }
+
     $categories = $conn->query("SELECT id, name_category FROM meal_categories")->fetchAll(PDO::FETCH_ASSOC);
     $ingredients = $conn->query("SELECT id, name FROM ingredients")->fetchAll(PDO::FETCH_ASSOC);
     $units = $conn->query("SELECT id, name FROM units")->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 <!DOCTYPE html>

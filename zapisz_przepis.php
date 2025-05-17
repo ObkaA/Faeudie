@@ -7,12 +7,19 @@ error_reporting(E_ALL);
 <?php
 require_once 'db.php';
 
+require_once 'sesja.php'; // zakładam, że tam masz loginUser, isLoggedIn itd.
+
+if (!isLoggedIn()) {
+// Użytkownik niezalogowany – zablokuj dodawanie
+    die('Musisz być zalogowany, żeby dodać przepis!');
+}
+
 $nazwa = $_POST['nazwa'];
 $instrukcje = $_POST['instrukcje'];
 $kategoria = $_POST['kategoria'];
 $kalorie = $_POST['kalorie'];
 $porcje = $_POST['porcje'];
-$user_id = 1;
+$user_id = $_SESSION['user_id'];
 
 if (empty($nazwa) || empty($instrukcje) || empty($kategoria) || empty($kalorie) || empty($porcje)) {
     echo "Wszystkie pola są wymagane!";

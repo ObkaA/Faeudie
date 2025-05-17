@@ -73,5 +73,17 @@ kliknąć register server i tam wybrać:
 
 resztę rzeczy zostawić. Jeżeli chcemy innego użytkownia to trzeba dla niego ustawić hasło i tu też (ale też zmienić w plikach php więc dla nas nie warto)
 
+### Wczytywanie backupa
+Otworzyć query tool dla bazy danych
+
+Wpisać dwie linijki:
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
+
+I uruchomic ten skrypt.
+Natępnie wkleić zawartość backupa i uruchomić skrypt.
+
+Prawy nacisnąć refresh.
+
 
 

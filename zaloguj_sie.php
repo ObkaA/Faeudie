@@ -24,16 +24,14 @@
         //echo '<p style="color: blue;">Login: ' . htmlspecialchars($login) . '</p>';
         //echo '<p style="color: blue;">Hasło: ' . htmlspecialchars($haslo) . '</p>';
 
-        //Znajdowanie użytkownika
-        $stmt = $conn->prepare("SELECT password_hashed FROM users WHERE login = :login LIMIT 1");
+        $stmt = $conn->prepare("SELECT id, password_hashed FROM users WHERE login = :login LIMIT 1");
         $stmt->execute([':login' => $login]);
-        $user=$stmt->fetch(PDO::FETCH_NUM);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if($user) 
         {
-            if(password_verify($haslo, $user[0]))
-            {
-                loginUser($login);
+            if(password_verify($haslo, $user['password_hashed'])) {
+                loginUser($user['id'], $login);
                 $komunikat='Zalogowano';
                 $typKomunikatu='sukces';
             }

@@ -6,8 +6,8 @@ if(session_status() === PHP_SESSION_NONE)
 
 
 // Funkcja do logowania użytkownika
-function loginUser($login) {
-    $_SESSION['user_id'] = 0;//nie potrzebne nam
+function loginUser($user_id, $login) {
+    $_SESSION['user_id'] = $user_id;//nie potrzebne nam
     $_SESSION['login'] = $login;
     //echo '<p style="color: blue;">Hasło: ' . htmlspecialchars('logged') . '</p>';
 }
