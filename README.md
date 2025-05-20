@@ -14,7 +14,16 @@ Uruchomienie PGAdmin przez wpisanie w terminalu:
 
 ``` /usr/pgadmin4/bin/pgadmin4``` 
 
-Rozwinąć Databases->postgres. Prawym na to i  ```Restore```. Zostawiamy jak jest i wybieramy plik (przeklikać co jest wyświetlane w prawym dolnym, bo są dwa "All File" i to nie to samo).
+### Wczytywanie backupa
+Otworzyć query tool dla bazy danych
+
+Wpisać dwie linijki:
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
+
+I uruchomic ten skrypt.
+Natępnie usunąć to i wkleić jako skrypt zawartość DB_BACKUP.backup i uruchomić skrypt.
+Prawy nacisnąć refresh.
 
 ### PHP
 Uruchomić serwer php:
@@ -31,9 +40,9 @@ Powinna otworzyć się strona.
 
 
 ### Backup
-Analogicznie jak Restore klikamy ```Backup```:
+Klikamy prawym na bazę i ```Backup```:
 
-- Name - wybieramy plik bez rozszerzenia (polecam wybrać lokalizację bo nie wiem gdie to się zapisuje domyślne)
+- Name - wybieramy DB_BACKUP.backup by go nadpisać (jeżeli go nie widać to przeklikać typy plików prawym dolnym rogu
 - Format - Plain
 - Querry Option -> Use Insert Command włączone
 
@@ -73,17 +82,7 @@ kliknąć register server i tam wybrać:
 
 resztę rzeczy zostawić. Jeżeli chcemy innego użytkownia to trzeba dla niego ustawić hasło i tu też (ale też zmienić w plikach php więc dla nas nie warto)
 
-### Wczytywanie backupa
-Otworzyć query tool dla bazy danych
 
-Wpisać dwie linijki:
-DROP SCHEMA public CASCADE;
-CREATE SCHEMA public;
-
-I uruchomic ten skrypt.
-Natępnie wkleić zawartość backupa i uruchomić skrypt.
-
-Prawy nacisnąć refresh.
 
 
 
