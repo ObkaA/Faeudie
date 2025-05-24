@@ -21,6 +21,9 @@ Wpisać dwie linijki:
 DROP SCHEMA public CASCADE;
 CREATE SCHEMA public;
 
+W terminalu wpisać $ cp produkty_all_unique_names.csv /tmp/
+
+
 I uruchomic ten skrypt.
 Natępnie usunąć to i wkleić jako skrypt zawartość DB_BACKUP.backup i uruchomić skrypt.
 Prawy nacisnąć refresh.
