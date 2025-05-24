@@ -69,23 +69,21 @@ ALTER SEQUENCE public.comments_id_seq OWNED BY public.comments.id;
 --
 
 CREATE TABLE public.fridgeingredient (
-    id integer NOT NULL,
-    user_id integer NOT NULL,
-    ingredient_id integer NOT NULL,
-    amount integer NOT NULL,
-    unit character varying(15) NOT NULL
+    user_id INTEGER NOT NULL,
+    ingredient_id INTEGER NOT NULL,
+    category VARCHAR(15) NOT NULL
+    amount DECIMAL(10, 2) NOT NULL, -- Changed to DECIMAL for flexibility (e.g., 0.5 kg)
+    unit VARCHAR(15) NOT NULL,
+    PRIMARY KEY (user_id, ingredient_id, unit) -- Composite Primary Key
 );
-
-
 ALTER TABLE public.fridgeingredient OWNER TO postgres;
-
 --
 -- TOC entry 210 (class 1259 OID 24741)
 -- Name: ingredients; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.ingredients (
-    id integer NOT NULL,
+    id SERIAL PRIMARY KEY,
     name character varying(255) NOT NULL,
     protein double precision DEFAULT 0 NOT NULL,
     fat double precision DEFAULT 0 NOT NULL,
@@ -364,20 +362,10 @@ INSERT INTO public.comments VALUES (1, 6, 18, 'Fajen, pozdrawiam', '2025-05-17 2
 -- Data for Name: ingredients; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.ingredients VALUES (1, 'pomidor', 0, 0, 0);
-INSERT INTO public.ingredients VALUES (2, 'Brokuly', 0, 0, 0);
-INSERT INTO public.ingredients VALUES (3, 'Smietana 30\%', 0, 0, 0);
-INSERT INTO public.ingredients VALUES (4, 'Bulka czosnkowa', 0, 0, 0);
-INSERT INTO public.ingredients VALUES (5, 'Makaron spaghetti', 0, 0, 0);
-INSERT INTO public.ingredients VALUES (6, 'Mieso mielone', 0, 0, 0);
-INSERT INTO public.ingredients VALUES (7, 'Cebula', 0, 0, 0);
-INSERT INTO public.ingredients VALUES (8, 'Czosnek', 0, 0, 0);
-INSERT INTO public.ingredients VALUES (9, 'Pomidory z puszki', 0, 0, 0);
-INSERT INTO public.ingredients VALUES (10, 'Jajka', 0, 0, 0);
-INSERT INTO public.ingredients VALUES (11, 'Mleko', 0, 0, 0);
-INSERT INTO public.ingredients VALUES (12, 'Sol', 0, 0, 0);
-INSERT INTO public.ingredients VALUES (13, 'Pieprz', 0, 0, 0);
-INSERT INTO public.ingredients VALUES (14, 'Olej', 0, 0, 0);
+COPY public.ingredients (name, category, protein, carbs, fat)
+FROM '/home/gyz/Desktop/Faeudie/produkty_all_unique_names.csv' -- Path changed!
+DELIMITER ','
+CSV HEADER; -- or CSV;
 
 
 --
@@ -546,8 +534,8 @@ ALTER TABLE ONLY public.comments
 -- Name: fridgeingredient fridgeingredient_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.fridgeingredient
-    ADD CONSTRAINT fridgeingredient_pkey PRIMARY KEY (id);
+-- ALTER TABLE ONLY public.fridgeingredient
+--     ADD CONSTRAINT fridgeingredient_pkey PRIMARY KEY (id);
 
 
 --
@@ -564,8 +552,6 @@ ALTER TABLE ONLY public.ingredients
 -- Name: ingredients ingredients_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.ingredients
-    ADD CONSTRAINT ingredients_pkey PRIMARY KEY (id);
 
 
 --
