@@ -74,7 +74,6 @@ ALTER SEQUENCE public.comments_id_seq OWNED BY public.comments.id;
 CREATE TABLE public.fridgeingredient (
     user_id INTEGER NOT NULL,
     ingredient_id INTEGER NOT NULL,
-    category VARCHAR(15) NOT NULL,
     amount DECIMAL(10, 2) NOT NULL, -- Changed to DECIMAL for flexibility (e.g., 0.5 kg)
     unit VARCHAR(15) NOT NULL,
     PRIMARY KEY (user_id, ingredient_id, unit) -- Composite Primary Key
@@ -88,7 +87,6 @@ ALTER TABLE public.fridgeingredient OWNER TO postgres;
 CREATE TABLE public.ingredients (
     id SERIAL PRIMARY KEY,
     name character varying(255) NOT NULL,
-	category VARCHAR(15) NOT NULL,
     protein double precision DEFAULT 0 NOT NULL,
     fat double precision DEFAULT 0 NOT NULL,
     carbs double precision DEFAULT 0 NOT NULL
@@ -366,7 +364,7 @@ INSERT INTO public.comments VALUES (1, 6, 18, 'Fajen, pozdrawiam', '2025-05-17 2
 -- Data for Name: ingredients; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.ingredients (name, category, protein, carbs, fat)
+COPY public.ingredients (name, protein, carbs, fat)
 FROM '/tmp/produkty_all_unique_names.csv' -- Path changed!
 DELIMITER ','
 CSV HEADER; -- or CSV;
