@@ -72,7 +72,7 @@
     <p><strong>Kalorie:</strong> <?=$recipe['calories'] ?> </p>
     <p><strong>Liczba porcji:</strong> <?=$recipe['portions'] ?> </p>
 
-```
+
 <!-- Wyświetlenie średniej oceny -->
 <div class="average-rating">
     <p>Średnia ocena: <strong><?= $avgRating ?></strong> (na podstawie <?= $ratingCount ?> ocen)</p>
@@ -106,13 +106,13 @@
 
 <h2>Komentarze</h2>
 <?php if (!$comments): ?>
-   <? echo "<p>Brak komentarzy. Bądź pierwszy!</p>"; ?>
+    <p>Brak komentarzy. Bądź pierwszy!</p>
 
 <?php else: ?>
     <ul>
     <?php foreach ($comments as $c): ?>
         <li>
-            <strong><?=htmlspecialchars($c['login'])?></strong> (<?=htmlspecialchars($c['time_created'])?>):<br>
+        <strong><?=htmlspecialchars($c['login'])?></strong> (<?= date('Y-m-d H:i', strtotime($c['time_created'])) ?>):<br>
             <?=nl2br(htmlspecialchars($c['comment']))?>
         </li>
     <?php endforeach; ?>
@@ -149,7 +149,7 @@
 <?php else: ?>
     <p><em>Zaloguj się, aby ocenić przepis.</em></p>
 <?php endif; ?>
-```
+
 
 </div>
 </body>
