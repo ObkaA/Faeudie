@@ -327,3 +327,14 @@ ul li {
 .star-rating label:hover ~ label {
     color: gold;
 }
+
+.recipe-list-heading {
+    color: white;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
+    border-bottom: 3px solid #ffffff;
+    padding-bottom: 10px;
+    width: fit-content;
+    margin: 140px auto 20px auto;
+    font-size: 40px;
+    font-weight: 800;
+}

@@ -75,22 +75,22 @@ if ($show_only_makeable && $user_id) {
             border-top: 1px dashed #eee;
         }
         .filter-options {
-            text-align: center;
+            margin-left:100px;
             margin-bottom: 20px;
         }
         .filter-options a {
             padding: 10px 15px;
             margin: 0 5px;
-            border: 1px solid #007bff;
+            border: 1px solidrgb(65, 58, 55);
             border-radius: 5px;
             text-decoration: none;
-            color: #007bff;
+            color:rgb(59, 51, 51);
             background-color: #fff;
             transition: background-color 0.3s, color 0.3s;
         }
         .filter-options a.active,
         .filter-options a:hover {
-            background-color: #007bff;
+            background-color:rgb(70, 63, 57);
             color: #fff;
         }
     </style>
@@ -101,7 +101,8 @@ if ($show_only_makeable && $user_id) {
 
 <?php include 'menu.php'; ?>
 
-<h2 style="text-align:center; margin-top: 140px; ">Lista przepisów</h2>
+<h2 class="recipe-list-heading">Lista przepisów</h2>
+
 
 <div class="filter-options">
     <a href="wszystkie_przepisy.php" class="<?= !$show_only_makeable ? 'active' : '' ?>">Wszystkie przepisy</a>
@@ -111,7 +112,9 @@ if ($show_only_makeable && $user_id) {
 </div>
 
 <?php if (empty($recipes)): ?>
+    <div class="recipe">
     <p style="text-align: center;">Brak przepisów do wyświetlenia.</p>
+</div>
 <?php else: ?>
     <?php foreach ($recipes as $recipe): ?>
         <div class="recipe">
