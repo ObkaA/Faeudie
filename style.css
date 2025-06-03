@@ -127,21 +127,20 @@ form select{
 
 .ingredient-row {
     display: flex;
-    flex-wrap: wrap;
-    gap:10px;
-    margin-bottom:15px
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: nowrap; /* ważne, żeby nie łamać wiersza */
 }
 
-.ingredient-row label{
-    flex: 1 1 100%;
+.ingredient-row label {
+    flex: 0 0 80px; /* stała szerokość etykiety */
+    font-weight: 600;
 }
 
-.ingredient-row input[type="text"],
-.ingredient-row input[type="number"],
-.ingredient-row select {
-    flex: 1; /* zajmują pozostałą przestrzeń */
-    padding: 5px;
-    font-size: 1em;
+.ingredient-row select,
+.ingredient-row input{
+    flex: 1 1 calc(33.33%-10px);
 }
 
 #add-ingredient-btn{

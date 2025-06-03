@@ -51,9 +51,6 @@ error_reporting(E_ALL);
         <?php endforeach; ?>
     </select><br>
 
-    <label for="kalorie">Kalorie:</label>
-    <input type="number" id="kalorie" name="kalorie" required><br>
-
     <label for="porcje">Liczba porcji:</label>
     <input type="number" id="porcje" name="porcje" required> <br>
 
@@ -89,14 +86,21 @@ error_reporting(E_ALL);
 </div>
 
 <script>
+    const unitsOptions = `<?php
+        $options = '';
+        foreach ($units as $unit) {
+            $options .= '<option value="' . $unit['id'] . '">' . htmlspecialchars($unit['name']) . '</option>';
+        }
+        echo $options;
+    ?>`;
+
     document.getElementById("add-ingredient-btn").addEventListener("click", function(){
         var newRow = document.createElement("div");
         newRow.classList.add("ingredient-row");
 
         newRow.innerHTML = `
             <label>Składnik:</label>
-            <input type="text" id="ingredient_name_input" list="ingredient_suggestions" placeholder="Wpisz nazwę składnika..." required>
-            <datalist id="ingredient_suggestions">
+            <input type="text" name="skladnik[]" list="ingredient_suggestions" placeholder="Wpisz nazwę składnika..." required>            <datalist id="ingredient_suggestions">
                 <?php foreach($ingredients as $ing): ?>
                     <option value="<?= $ing['id'] ?>"><?= $ing['name'] ?></option>
                 <?php endforeach; ?>
@@ -108,9 +112,7 @@ error_reporting(E_ALL);
 
             <label>Jednostka:</label>
             <select name="jednostka[]">
-                <?php foreach ($units as $unit): ?>
-                    <option value="<?= $unit['id'] ?>"><?= $unit['name'] ?></option>
-                <?php endforeach; ?>
+                ${unitsOptions}
             </select>
         `;
         

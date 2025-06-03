@@ -2,100 +2,111 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-?>
 
-<?php
 require_once 'db.php';
-
-require_once 'sesja.php'; // zakładam, że tam masz loginUser, isLoggedIn itd.
+require_once 'sesja.php';
 
 if (!isLoggedIn()) {
-// Użytkownik niezalogowany – zablokuj dodawanie
     die('Musisz być zalogowany, żeby dodać przepis!');
 }
 
 $nazwa = $_POST['nazwa'];
 $instrukcje = $_POST['instrukcje'];
 $kategoria = $_POST['kategoria'];
-$kalorie = $_POST['kalorie'];
 $porcje = $_POST['porcje'];
 $user_id = $_SESSION['user_id'];
-
-if (empty($nazwa) || empty($instrukcje) || empty($kategoria) || empty($kalorie) || empty($porcje)) {
-    echo "Wszystkie pola są wymagane!";
-    exit;
-}
-
-if (!is_numeric($kalorie) || !is_numeric($porcje)) {
-    echo "Kalori i porcje muszą być liczbami!";
-    exit;
-}
-
-$query = "INSERT INTO recipes (user_id, title, category, instructions, calories, portions) 
-          VALUES (:user_id, :title, :category, :instructions, :calories, :portions)";
-$stmt = $conn->prepare($query);
-$stmt->execute([
-    ':user_id' => $user_id,
-    ':title' => $nazwa,
-    ':category' => $kategoria,
-    ':instructions' => $instrukcje,
-    ':calories' => $kalorie,
-    ':portions' => $porcje
-]);
-
-$recipe_id = $conn->lastInsertId();
 
 $skladniki = $_POST['skladnik'];
 $ilosci = $_POST['ilosc'];
 $jednostki = $_POST['jednostka'];
 
-if (empty($skladniki) || empty($ilosci) || empty($jednostki)) {
-    echo "Wszystkie składniki muszą być wypełnione!";
+if (empty($nazwa) || empty($instrukcje) || empty($kategoria) || empty($porcje) || empty($skladniki)) {
+    echo "Wszystkie pola są wymagane!";
     exit;
 }
 
+if (!is_numeric($porcje)) {
+    echo "Porcje muszą być liczbą!";
+    exit;
+}
+
+$totalCalories = 0;
+
+// Przetwarzanie składników i obliczanie kalorii
+$ingredient_ids = [];
+
 for ($i = 0; $i < count($skladniki); $i++) {
     $ingredient_name = trim($skladniki[$i]);
-    if ($ingredient_name === '') {
-        echo "Nazwa składnika nie może być pusta!";
+    $quantity = floatval($ilosci[$i]);
+    $unit_id = intval($jednostki[$i]);
+
+    if ($ingredient_name === '' || $quantity <= 0) {
+        echo "Niepoprawne dane składnika.";
         exit;
     }
 
-    if (!is_numeric($ilosci[$i])) {
-        echo "Ilość składnika musi być liczbą!";
-        exit;
-    }
 
-    // Sprawdź czy składnik już istnieje w bazie
-    $stmt = $conn->prepare("SELECT id FROM ingredients WHERE name ILIKE :name");
+    // Sprawdź czy składnik istnieje
+    $stmt = $conn->prepare("SELECT id, protein, fat, carbs FROM ingredients WHERE name ILIKE :name LIMIT 1");
     $stmt->execute([':name' => $ingredient_name]);
-    $existing = $stmt->fetch(PDO::FETCH_ASSOC);
+    $ingredient = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($existing) {
-        $ingredient_id = $existing['id'];
+    if ($ingredient) {
+        $ingredient_id = $ingredient['id'];
+        $protein = $ingredient['protein'];
+        $fat = $ingredient['fat'];
+        $carbs = $ingredient['carbs'];
     } else {
-        // Dodaj nowy składnik i pobierz jego id
-        $stmt = $conn->prepare("INSERT INTO ingredients (name) VALUES (:name) RETURNING id");
+        // Nowy składnik z zerowymi makrami
+        $stmt = $conn->prepare("INSERT INTO ingredients (name, protein, fat, carbs) VALUES (:name, 0, 0, 0) RETURNING id");
         $stmt->execute([':name' => $ingredient_name]);
         $new_ing = $stmt->fetch(PDO::FETCH_ASSOC);
-        if (!$new_ing) {
-            echo "Błąd przy dodawaniu nowego składnika: $ingredient_name";
-            exit;
-        }
         $ingredient_id = $new_ing['id'];
+        $protein = $fat = $carbs = 0;
     }
 
-    // Teraz dodaj składnik do recipeingredients z uzyskanym ID
-    $query = "INSERT INTO recipeingredients (recipe_id, ingredient_id, amount, unit) 
-              VALUES (:recipe_id, :ingredient_id, :amount, :unit)";
-    $stmt = $conn->prepare($query);
+    // Licz kalorie jeśli są makra (na 100g)
+    $totalCalories += ($quantity * (4 * $protein + 9 * $fat + 4 * $carbs)) / 100;
+
+    echo "Total calories: " . $total_calories . "<br>";
+    // Zapamiętaj do późniejszego dodania do recipeingredients
+    $ingredient_ids[] = [
+        'id' => $ingredient_id,
+        'amount' => $quantity,
+        'unit' => $unit_id
+    ];
+}
+var_dump($_POST['skladnik']);
+var_dump($_POST['ilosc']);
+var_dump($_POST['jednostka']);
+// exit;
+
+// Wstaw przepis do bazy z obliczonymi kaloriami
+$stmt = $conn->prepare("INSERT INTO recipes (user_id, title, category, instructions, calories, portions) 
+                        VALUES (:user_id, :title, :category, :instructions, :calories, :portions)");
+$stmt->execute([
+    ':user_id' => $user_id,
+    ':title' => $nazwa,
+    ':category' => $kategoria,
+    ':instructions' => $instrukcje,
+    ':calories' => (int)$totalCalories,
+    ':portions' => $porcje
+]);
+
+$recipe_id = $conn->lastInsertId();
+
+// Dodaj składniki do tabeli recipeingredients
+foreach ($ingredient_ids as $ing) {
+    $stmt = $conn->prepare("INSERT INTO recipeingredients (recipe_id, ingredient_id, amount, unit) 
+                            VALUES (:recipe_id, :ingredient_id, :amount, :unit)");
     $stmt->execute([
         ':recipe_id' => $recipe_id,
-        ':ingredient_id' => $ingredient_id,
-        ':amount' => $ilosci[$i],
-        ':unit' => $jednostki[$i]
+        ':ingredient_id' => $ing['id'],
+        ':amount' => $ing['amount'],
+        ':unit' => $ing['unit']
     ]);
 }
 
-header('Location: index.php'); 
-exit();
+header('Location: index.php');
+exit;
+?>
