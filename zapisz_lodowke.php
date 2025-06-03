@@ -66,6 +66,8 @@ try {
                 throw new Exception("New ingredient name cannot be empty.");
             }
 
+            
+
             // Check if ingredient exists in 'ingredients' table
             $stmt = $conn->prepare("SELECT id FROM ingredients WHERE name ILIKE :ingredient_name");
             $stmt->execute([':ingredient_name' => $ingredient_name]);

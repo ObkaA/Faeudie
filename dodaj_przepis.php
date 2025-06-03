@@ -16,6 +16,9 @@ error_reporting(E_ALL);
     $ingredients = $conn->query("SELECT id, name FROM ingredients")->fetchAll(PDO::FETCH_ASSOC);
     $units = $conn->query("SELECT id, name FROM units")->fetchAll(PDO::FETCH_ASSOC);
 
+    // Fetch all available ingredients for the datalist (autocomplete suggestions)
+    $all_ingredients = $conn->query("SELECT id, name FROM ingredients ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 <!DOCTYPE html>
@@ -59,11 +62,13 @@ error_reporting(E_ALL);
     <div id="ingredients-container">
         <div class="ingredient-row">
             <label>Składnik:</label>
-            <select name="skladnik[]">
-                <?php foreach($ingredients as $ing): ?>
-                    <option value="<?=$ing['id'] ?>"><?= $ing['name'] ?></option>
+            <input type="text" name="skladnik[]" list="ingredient_suggestions" placeholder="Wpisz nazwę składnika..." required>
+            
+            <datalist id="ingredient_suggestions">
+                <?php foreach($all_ingredients as $ing): ?>
+                    <option value="<?= htmlspecialchars($ing['name']) ?>"></option>
                 <?php endforeach; ?>
-            </select>
+            </datalist>
 
             <label>Ilość:</label>
             <input type="number" name="ilosc[]" step="0.1" required>
@@ -90,11 +95,13 @@ error_reporting(E_ALL);
 
         newRow.innerHTML = `
             <label>Składnik:</label>
-            <select name="skladnik[]">
+            <input type="text" id="ingredient_name_input" list="ingredient_suggestions" placeholder="Wpisz nazwę składnika..." required>
+            <datalist id="ingredient_suggestions">
                 <?php foreach($ingredients as $ing): ?>
                     <option value="<?= $ing['id'] ?>"><?= $ing['name'] ?></option>
                 <?php endforeach; ?>
-            </select>
+                </datalist>
+            </input>
 
             <label>Ilość:</label>
             <input type="number" name="ilosc[]" step="0.1" required>

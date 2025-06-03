@@ -55,17 +55,43 @@ if (empty($skladniki) || empty($ilosci) || empty($jednostki)) {
 }
 
 for ($i = 0; $i < count($skladniki); $i++) {
+    $ingredient_name = trim($skladniki[$i]);
+    if ($ingredient_name === '') {
+        echo "Nazwa składnika nie może być pusta!";
+        exit;
+    }
+
     if (!is_numeric($ilosci[$i])) {
         echo "Ilość składnika musi być liczbą!";
         exit;
     }
 
+    // Sprawdź czy składnik już istnieje w bazie
+    $stmt = $conn->prepare("SELECT id FROM ingredients WHERE name ILIKE :name");
+    $stmt->execute([':name' => $ingredient_name]);
+    $existing = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($existing) {
+        $ingredient_id = $existing['id'];
+    } else {
+        // Dodaj nowy składnik i pobierz jego id
+        $stmt = $conn->prepare("INSERT INTO ingredients (name) VALUES (:name) RETURNING id");
+        $stmt->execute([':name' => $ingredient_name]);
+        $new_ing = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$new_ing) {
+            echo "Błąd przy dodawaniu nowego składnika: $ingredient_name";
+            exit;
+        }
+        $ingredient_id = $new_ing['id'];
+    }
+
+    // Teraz dodaj składnik do recipeingredients z uzyskanym ID
     $query = "INSERT INTO recipeingredients (recipe_id, ingredient_id, amount, unit) 
               VALUES (:recipe_id, :ingredient_id, :amount, :unit)";
     $stmt = $conn->prepare($query);
     $stmt->execute([
         ':recipe_id' => $recipe_id,
-        ':ingredient_id' => $skladniki[$i],
+        ':ingredient_id' => $ingredient_id,
         ':amount' => $ilosci[$i],
         ':unit' => $jednostki[$i]
     ]);
@@ -73,4 +99,3 @@ for ($i = 0; $i < count($skladniki); $i++) {
 
 header('Location: index.php'); 
 exit();
-?>

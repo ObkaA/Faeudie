@@ -136,9 +136,12 @@ form select{
     flex: 1 1 100%;
 }
 
-.ingredient-row select,
-.ingredient-row input{
-    flex: 1 1 calc(33.33%-10px);
+.ingredient-row input[type="text"],
+.ingredient-row input[type="number"],
+.ingredient-row select {
+    flex: 1; /* zajmują pozostałą przestrzeń */
+    padding: 5px;
+    font-size: 1em;
 }
 
 #add-ingredient-btn{
