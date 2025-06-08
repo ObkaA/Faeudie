@@ -362,10 +362,6 @@ $fridge_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 itemsToSave.push(itemData);
             });
 
-            if (itemsToSave.length === 0) {
-                alert('Brak składników do zapisania.');
-                return;
-            }
 
             // Send data to PHP script using Fetch API
             fetch('zapisz_lodowke.php', { // This is the PHP script that processes all changes
