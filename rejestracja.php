@@ -27,6 +27,11 @@
                 $komunikat = 'Hasło musi mieć co najmniej 4 znaków.';
                 $typKomunikatu = 'blad';
             } 
+            else if (strlen($haslo) > 30)
+            {
+            	$komunikat = 'Haslo musi mieć mniej niż 30 znaków.';
+            	$typKomunikatu = 'blad';
+            }
             else 
             {
                 $password_hashed = password_hash($haslo, PASSWORD_BCRYPT);
