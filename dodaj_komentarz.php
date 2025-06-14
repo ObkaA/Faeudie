@@ -13,10 +13,14 @@
         $comment = trim($_POST['comment'] ?? '');
     
         if (!$recipe_id || !$comment) {
-            // Błąd - brak danych
-            header("Location: przepis.php?id=" . intval($recipe_id));
-            exit();
-        }
+	    // Błąd - brak danych
+	    header("Location: przepis.php?id=" . intval($recipe_id) . "&status=error&message=empty_comment");
+	    exit();
+	} else if (strlen($comment) > 200) {
+	    // Błąd - Za długi komentarz
+	    header("Location: przepis.php?id=" . intval($recipe_id) . "&status=error&message=comment_too_long");
+	    exit();
+	}
     
         $stmt = $conn->prepare("INSERT INTO comments (user_id, recipe_id, comment, time_created) VALUES (:user_id, :recipe_id, :comment, NOW())");
         $stmt->execute([
