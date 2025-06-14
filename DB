@@ -661,7 +661,8 @@ ALTER TABLE ONLY public.fridgeingredient
 --
 
 ALTER TABLE ONLY public.fridgeingredient
-    ADD CONSTRAINT fridgeingredient_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
+    ADD CONSTRAINT fridgeingredient_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
 
 
 --
@@ -708,6 +709,8 @@ ALTER TABLE ONLY public.recipeingredients
 ALTER TABLE ONLY public.recipeingredients
     ADD CONSTRAINT recipeingredients_unit_fkey FOREIGN KEY (unit) REFERENCES public.units(id);
 
+ALTER TABLE public.users
+ADD CONSTRAINT users_login_key UNIQUE (login);
 
 --
 -- TOC entry 3285 (class 2606 OID 24831)
@@ -715,7 +718,7 @@ ALTER TABLE ONLY public.recipeingredients
 --
 
 ALTER TABLE ONLY public.recipes
-    ADD CONSTRAINT recipes_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
+    ADD CONSTRAINT recipes_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 -- Completed on 2025-05-18 00:22:16 CEST
