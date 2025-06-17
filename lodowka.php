@@ -17,13 +17,10 @@ if (!$user_id) {
     exit();
 }
 
-// Fetch all available ingredients for the datalist (autocomplete suggestions)
 $all_ingredients = $conn->query("SELECT id, name FROM ingredients ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
 
-// Define common units
 $common_units = ['g', 'kg', 'ml', 'l', 'szt.', 'szczypta', 'łyżka', 'łyżeczka', 'opakowanie'];
 
-// Fetch ingredients currently in the user's fridge, INCLUDING MACROS
 $stmt = $conn->prepare("
     SELECT
         i.name AS ingredient_name,
@@ -57,7 +54,6 @@ $fridge_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        /* Simple styling for demonstration, add to style.css if preferred */
         .fridge-table input[type="number"], .fridge-table select {
             width: 80px;
         }
@@ -179,14 +175,12 @@ $fridge_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
         const ingredientNameInput = document.getElementById('ingredient_name_input');
         const addNewItemBtn = document.getElementById('addNewItemBtn');
         const fridgeUpdateForm = document.getElementById('fridgeUpdateForm');
-        const noItemsRow = document.getElementById('no-items-row'); // Get the "empty fridge" row
+        const noItemsRow = document.getElementById('no-items-row');
 
-        // Prepare common units for JavaScript
         const commonUnits = <?= json_encode($common_units); ?>;
-        // All ingredients including macros for new row calculations
         const allIngredientsWithMacros = <?= json_encode($conn->query("SELECT id, name, protein, carbs, fat FROM ingredients")->fetchAll(PDO::FETCH_ASSOC)); ?>;
 
-        // Function to calculate macros and kcal
+        // Obliczanie kalorii i makro
         function calculateMacrosAndKcal(amount, proteinPer100, carbsPer100, fatPer100) {
             const ratio = amount / 100;
             const protein = parseFloat((proteinPer100 * ratio).toFixed(1));
@@ -196,7 +190,8 @@ $fridge_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
             return { protein, carbs, fat, kcal };
         }
 
-        // Function to update macro and kcal display in a row
+
+        // Aktualizowanie makro
         function updateMacroDisplay(row) {
             const amount = parseFloat(row.querySelector('.amount-input').value);
             const proteinPer100 = parseFloat(row.dataset.proteinPer100);
@@ -218,23 +213,21 @@ $fridge_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
 
-        // Function to create a new editable row
         function createNewFridgeItemRow(ingredientName, suggestedIngredientId = null, protein = 0, carbs = 0, fat = 0) {
-            // Remove "Twoja lodówka jest pusta" message if it exists
+            //Usuniecie "twoja lodowka jest pusta"
             if (noItemsRow) {
                 noItemsRow.remove();
             }
 
             const newRow = document.createElement('tr');
-            newRow.dataset.type = 'new'; // Mark as a new item
-            newRow.dataset.ingredientName = ingredientName; // Store the typed name
-            newRow.dataset.suggestedIngredientId = suggestedIngredientId; // Store suggested ID if found
+            newRow.dataset.type = 'new'; 
+            newRow.dataset.ingredientName = ingredientName; 
+            newRow.dataset.suggestedIngredientId = suggestedIngredientId; 
             newRow.dataset.proteinPer100 = protein;
             newRow.dataset.carbsPer100 = carbs;
             newRow.dataset.fatPer100 = fat;
 
-            // Initial macro and kcal calculation for new row
-            const initialAmount = 1.0; // Default for new items
+            const initialAmount = 1.0; 
             const { protein: initialProtein, carbs: initialCarbs, fat: initialFat, kcal: initialKcal } = 
                 calculateMacrosAndKcal(initialAmount, protein, carbs, fat);
 
@@ -259,11 +252,10 @@ $fridge_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
             `;
             fridgeItemsTbody.appendChild(newRow);
 
-            // Add event listeners for the new row's inputs
             newRow.querySelector('.amount-input').addEventListener('input', () => updateMacroDisplay(newRow));
             newRow.querySelector('.remove-item-btn').addEventListener('click', function() {
                 newRow.remove();
-                // If no items left, show "empty fridge" message
+                // Pusta lodówka
                 if (fridgeItemsTbody.children.length === 0) {
                     const emptyRow = document.createElement('tr');
                     emptyRow.id = 'no-items-row';
@@ -273,11 +265,10 @@ $fridge_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
             });
         }
 
-        // Add new item button click handler
         addNewItemBtn.addEventListener('click', function() {
             const ingredientName = ingredientNameInput.value.trim();
             if (ingredientName) {
-                // Check if the ingredient is already in the displayed list (case-insensitive, by name)
+                // Sprawdzenie czy składnik jest już w liście
                 const existingDisplayedItems = Array.from(fridgeItemsTbody.children).filter(row => row.id !== 'no-items-row');
                 const isAlreadyDisplayed = existingDisplayedItems.some(row => {
                     const displayedName = row.querySelector('td').textContent.trim();
@@ -287,7 +278,7 @@ $fridge_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 if (isAlreadyDisplayed) {
                     alert('Ten składnik już znajduje się na liście.');
                 } else {
-                    // Find if it's an existing ingredient to get its macros
+                    // Zebranie makra dla istniejącego składnika
                     const matchedIngredient = allIngredientsWithMacros.find(ing => ing.name.toLowerCase() === ingredientName.toLowerCase());
                     
                     if (matchedIngredient) {
@@ -299,7 +290,7 @@ $fridge_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             matchedIngredient.fat
                         );
                     } else {
-                        // For completely new ingredients, use default 0 macros
+                        // Ustawienie na kcal (w przyszlosci mozna zrobic to inaczej) 0 dla nowych skladnikow
                         createNewFridgeItemRow(ingredientName, null, 0, 0, 0);
                     }
                     ingredientNameInput.value = ''; // Clear input after adding
@@ -309,12 +300,12 @@ $fridge_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
         });
 
-        // Event listener for initial page loaded "remove" buttons
+        //Listener usuwania składnika
         document.querySelectorAll('.remove-item-btn').forEach(button => {
             button.addEventListener('click', function() {
                 const row = this.closest('tr');
                 row.remove();
-                // If no items left, show "empty fridge" message
+                // Wszystko zostało usunięte - Pokaż że lodówka jest pusta
                 if (fridgeItemsTbody.children.length === 0) {
                     const emptyRow = document.createElement('tr');
                     emptyRow.id = 'no-items-row';
@@ -324,7 +315,7 @@ $fridge_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
             });
         });
 
-        // Event listeners for amount inputs to update macros dynamically
+        // Aktualizacja makra (działa tylko dla nowych składników)
         document.querySelectorAll('.amount-input').forEach(input => {
             input.addEventListener('input', function() {
                 updateMacroDisplay(this.closest('tr'));
@@ -332,22 +323,21 @@ $fridge_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
         });
 
 
-        // Handle form submission (Save All Changes)
         fridgeUpdateForm.addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent default form submission
+            event.preventDefault();
 
             const itemsToSave = [];
             Array.from(fridgeItemsTbody.children).forEach(row => {
-                if (row.id === 'no-items-row') return; // Skip "no items" message
+                if (row.id === 'no-items-row') return;
 
-                const type = row.dataset.type; // 'existing' or 'new'
+                const type = row.dataset.type; // 'existing' lub 'new'
                 const ingredientName = type === 'new' ? row.dataset.ingredientName : row.querySelector('td').textContent.trim();
                 const amount = row.querySelector('.amount-input').value;
                 const unit = row.querySelector('.unit-select').value;
 
                 let itemData = {
                     type: type,
-                    ingredient_name: ingredientName, // Name for new items or identification
+                    ingredient_name: ingredientName,
                     amount: amount,
                     unit: unit
                 };
@@ -357,27 +347,26 @@ $fridge_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     itemData.ingredient_id = row.dataset.ingredientId;
                     itemData.original_unit = row.dataset.originalUnit;
                 } else { // type === 'new'
-                    itemData.suggested_ingredient_id = row.dataset.suggestedIngredientId; // Pass suggested ID if available
+                    itemData.suggested_ingredient_id = row.dataset.suggestedIngredientId; // Dostępne ID
                 }
                 itemsToSave.push(itemData);
             });
 
 
-            // Send data to PHP script using Fetch API
-            fetch('zapisz_lodowke.php', { // This is the PHP script that processes all changes
+            fetch('zapisz_lodowke.php', { // Skrypt do zapisania zmian w bazie danych
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(itemsToSave)
             })
-            .then(response => response.json()) // Expect JSON response
+            .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
-                    window.location.href = 'lodowka.php?status=success'; // Redirect with success message
+                    window.location.href = 'lodowka.php?status=success'; // Sukces
                 } else {
                     alert('Błąd podczas zapisywania zmian: ' + data.message);
-                    window.location.href = 'lodowka.php?status=error'; // Redirect with error message
+                    window.location.href = 'lodowka.php?status=error'; // Blad
                 }
             })
             .catch(error => {
